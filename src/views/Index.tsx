@@ -30,7 +30,7 @@ export const Index: FC<IndexProps> = (props) => {
     <>
       <div class="mb-6 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div>
-          <h1 class="text-2xl font-bold tracking-tight">ტრეიდების ჟურნალი</h1>
+          <h1 class="text-2xl font-bold tracking-tight">ტრეიდების ისტორია</h1>
           <p class="mt-1 text-slate-500 dark:text-slate-400 text-sm">
             ანალიტიკა და ჩანაწერები თვეების მიხედვით
           </p>
