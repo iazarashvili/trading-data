@@ -83,6 +83,8 @@ npm run deploy
 
 ყოველ `git push`-ზე Cloudflare თვითონ ააწყობს და გამოაქვეყნებს.
 
+> მიბმულია: `iazarashvili/trading-data` → Worker `trading-journal`, ბრენჩი `main`.
+
 ### 1. რეპოზიტორია
 
 შექმენი **პრივატული** რეპო GitHub-ზე, შემდეგ:
