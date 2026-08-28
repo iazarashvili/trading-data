@@ -13,6 +13,7 @@ import { error, setFlashes, success, takeFlashes } from '../lib/flash'
 import { floatOrNull } from '../lib/trade-input'
 import type { AppEnv } from '../types'
 import { Index } from '../views/Index'
+import { Killzones } from '../views/Killzones'
 import { Layout } from '../views/Layout'
 
 export const pages = new Hono<AppEnv>()
@@ -74,7 +75,7 @@ pages.get('/', async (c) => {
   for (const month of months) monthLabels[month] = monthLabel(month)
 
   return c.html(
-    <Layout title="ჩანაწერები — Trading Journal" flashes={takeFlashes(c)}>
+    <Layout title="ჩანაწერები — Trading Journal" flashes={takeFlashes(c)} activeNav="history">
       <Index
         trades={trades}
         assets={assets}
@@ -114,3 +115,12 @@ pages.post('/', async (c) => {
   setFlashes(c, [success(`${monthLabel(monthId)} — საწყისი ბალანსი შენახულია.`)])
   return c.redirect(`/?month=${encodeURIComponent(monthId)}`)
 })
+
+/** ICT killzone-ების ცხრილი (დროები ბრაუზერში გადაითვლება ლოკალურ სარტყელში) */
+pages.get('/killzones', (c) =>
+  c.html(
+    <Layout title="ICT Killzones — Trading Journal" flashes={takeFlashes(c)} activeNav="killzones">
+      <Killzones />
+    </Layout>,
+  ),
+)
