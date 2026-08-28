@@ -1,7 +1,7 @@
 import type { FC } from 'hono/jsx'
 import { toDateTimeLocal } from '../lib/date'
 import { ACCEPT_ATTRIBUTE } from '../lib/uploads'
-import { EMOTIONS, type TradeFormState } from '../types'
+import type { TradeFormState } from '../types'
 
 const value = (input: number | string | null | undefined): string =>
   input === null || input === undefined ? '' : String(input)
@@ -35,6 +35,16 @@ const PREVIEW_SCRIPT = `
   }
   bindPreview('screenshot', 'screenshot-preview', 'screenshot-preview-img');
   bindPreview('screenshot2', 'screenshot2-preview', 'screenshot2-preview-img');
+
+  // ახალ ფორმაზე თარიღი დღევანდელით ივსება. ბრაუზერის დროით, არა სერვერის —
+  // Worker UTC-ში მუშაობს და საღამოს თარიღიც კი აცდებოდა.
+  var dt = document.getElementById('trade_datetime');
+  if (dt && !dt.value) {
+    var now = new Date();
+    var pad = function (n) { return String(n).padStart(2, '0'); };
+    dt.value = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate()) +
+      'T' + pad(now.getHours()) + ':' + pad(now.getMinutes());
+  }
 })();`
 
 interface TradeFormProps {
@@ -167,8 +177,8 @@ export const TradeForm: FC<TradeFormProps> = ({ trade, editing }) => (
               step="any"
               min="0"
               max="100"
-              placeholder="1.0"
-              value={value(trade.risk_percent)}
+              placeholder="0.01"
+              value={trade.risk_percent === undefined ? '0.01' : value(trade.risk_percent)}
               class={`${INPUT_CLASS} tabular-nums`}
             />
           </div>
@@ -182,23 +192,9 @@ export const TradeForm: FC<TradeFormProps> = ({ trade, editing }) => (
               id="risk_reward"
               name="risk_reward"
               placeholder="მაგ. 1:3"
-              value={value(trade.risk_reward)}
+              value={trade.risk_reward === undefined ? '1:3' : value(trade.risk_reward)}
               class={INPUT_CLASS}
             />
-          </div>
-
-          <div>
-            <label for="emotion_open" class="block text-sm font-medium mb-1.5">
-              ემოცია გახსნისას
-            </label>
-            <select id="emotion_open" name="emotion_open" class={INPUT_CLASS}>
-              <option value="">—</option>
-              {EMOTIONS.map((emotion) => (
-                <option value={emotion} selected={trade.emotion_open === emotion}>
-                  {emotion}
-                </option>
-              ))}
-            </select>
           </div>
         </div>
       </section>
@@ -285,21 +281,6 @@ export const TradeForm: FC<TradeFormProps> = ({ trade, editing }) => (
               class={INPUT_CLASS}
             >
               {value(trade.conclusion)}
-            </textarea>
-          </div>
-
-          <div>
-            <label for="emotion_close" class="block text-sm font-medium mb-1.5">
-              ემოცია დახურვისას
-            </label>
-            <textarea
-              id="emotion_close"
-              name="emotion_close"
-              rows={2}
-              placeholder="როგორ გრძნობდი თავს დახურვის შემდეგ..."
-              class={INPUT_CLASS}
-            >
-              {value(trade.emotion_close)}
             </textarea>
           </div>
         </div>

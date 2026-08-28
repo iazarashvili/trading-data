@@ -26,10 +26,8 @@ export function parseTradeForm(form: FormData): TradeInput {
     risk_reward: text(form.get('risk_reward')),
     setup: text(form.get('setup')),
     chart_link: text(form.get('chart_link')),
-    emotion_open: text(form.get('emotion_open')),
     result: floatOrNull(form.get('result')),
     conclusion: text(form.get('conclusion')),
-    emotion_close: text(form.get('emotion_close')),
   }
 }
 
@@ -76,10 +74,8 @@ export function parseTradeJson(body: Record<string, unknown>): ApiTradePayload {
     risk_reward: text(pick('risk_reward', 'rr')),
     setup: text(body.setup),
     chart_link: text(body.chart_link),
-    emotion_open: text(body.emotion_open) || 'Neutral',
     result: floatOrNull(pick('result', 'profit')),
     conclusion: text(pick('conclusion', 'comment')),
-    emotion_close: text(body.emotion_close),
     external_id: text(pick('external_id', 'deal_id')),
     source: text(body.source) || 'mt5',
   }

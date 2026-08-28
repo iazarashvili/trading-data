@@ -27,10 +27,8 @@ export interface Trade {
   risk_reward: string | null
   setup: string | null
   chart_link: string | null
-  emotion_open: string | null
   result: number | null
   conclusion: string | null
-  emotion_close: string | null
   screenshot: string | null
   screenshot2: string | null
   external_id: string | null
@@ -50,10 +48,8 @@ export interface TradeInput {
   risk_reward: string
   setup: string
   chart_link: string
-  emotion_open: string
   result: number | null
   conclusion: string
-  emotion_close: string
 }
 
 /** ფორმის მდგომარეობა ხელახლა დახატვისას (შეცდომის შემდეგ) */
@@ -87,17 +83,3 @@ export interface Mt5Status {
   [key: string]: unknown
   _updated_at: string
 }
-
-/** ემოციების ჩამონათვალი (SPEC სექცია 4) */
-export const EMOTIONS = [
-  'Calm',
-  'Confident',
-  'FOMO',
-  'Anxious',
-  'Greedy',
-  'Fearful',
-  'Impatient',
-  'Neutral',
-  'Excited',
-  'Frustrated',
-] as const

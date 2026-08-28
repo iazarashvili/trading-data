@@ -83,7 +83,6 @@ export const TradeDetail: FC<{ trade: Trade }> = ({ trade }) => (
             value={trade.risk_percent === null ? null : `${trade.risk_percent}%`}
           />
           <Field label="R:R" value={trade.risk_reward} />
-          <Field label="ემოცია გახსნისას" value={trade.emotion_open} />
         </dl>
       </section>
 
@@ -115,25 +114,12 @@ export const TradeDetail: FC<{ trade: Trade }> = ({ trade }) => (
       </section>
 
       <section class={`lg:col-span-2 ${SECTION_CLASS}`}>
-        <h2 class={TITLE_CLASS}>დასკვნა და ემოცია დახურვისას</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h3 class="text-xs font-medium text-slate-500 mb-2">დასკვნა</h3>
-            {trade.conclusion ? (
-              <p class="text-sm whitespace-pre-wrap leading-relaxed">{trade.conclusion}</p>
-            ) : (
-              <p class="text-sm text-slate-500">—</p>
-            )}
-          </div>
-          <div>
-            <h3 class="text-xs font-medium text-slate-500 mb-2">ემოცია დახურვისას</h3>
-            {trade.emotion_close ? (
-              <p class="text-sm whitespace-pre-wrap leading-relaxed">{trade.emotion_close}</p>
-            ) : (
-              <p class="text-sm text-slate-500">—</p>
-            )}
-          </div>
-        </div>
+        <h2 class={TITLE_CLASS}>დასკვნა</h2>
+        {trade.conclusion ? (
+          <p class="text-sm whitespace-pre-wrap leading-relaxed">{trade.conclusion}</p>
+        ) : (
+          <p class="text-sm text-slate-500">—</p>
+        )}
       </section>
     </div>
 

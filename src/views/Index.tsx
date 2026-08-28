@@ -396,7 +396,6 @@ const TradesTable: FC<{ trades: Trade[]; monthDisplay: string }> = ({ trades, mo
               <th class="text-right px-4 py-3 font-medium text-slate-500">SL / TP</th>
               <th class="text-right px-4 py-3 font-medium text-slate-500">რისკი</th>
               <th class="text-right px-4 py-3 font-medium text-slate-500">R:R</th>
-              <th class="text-left px-4 py-3 font-medium text-slate-500">ემოცია</th>
               <th class="text-right px-4 py-3 font-medium text-slate-500">შედეგი</th>
               <th class="px-4 py-3"></th>
             </tr>
@@ -438,7 +437,6 @@ const TradesTable: FC<{ trades: Trade[]; monthDisplay: string }> = ({ trades, mo
                   {trade.risk_percent === null ? '—' : `${trade.risk_percent}%`}
                 </td>
                 <td class="px-4 py-3 text-right">{num(trade.risk_reward)}</td>
-                <td class="px-4 py-3 text-slate-500">{num(trade.emotion_open)}</td>
                 <td
                   class={
                     'px-4 py-3 text-right font-semibold tabular-nums ' +
@@ -593,7 +591,6 @@ const TradeCard: FC<{ trade: Trade }> = ({ trade }) => (
         value={trade.risk_percent === null ? '—' : `${trade.risk_percent}%`}
       />
       <CardPair label="R:R" value={num(trade.risk_reward)} />
-      {trade.emotion_open ? <CardPair label="ემოცია" value={trade.emotion_open} /> : null}
     </dl>
   </a>
 )

@@ -102,9 +102,9 @@ export async function insertTrade(
       `INSERT INTO trades (
          trade_datetime, asset, direction, entry_price, stop_loss,
          take_profit, risk_percent, risk_reward, setup, chart_link,
-         emotion_open, result, conclusion, emotion_close,
+         result, conclusion,
          external_id, source, created_at
-       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
     .bind(
       input.trade_datetime,
@@ -117,10 +117,8 @@ export async function insertTrade(
       input.risk_reward || null,
       input.setup || null,
       input.chart_link || null,
-      input.emotion_open || null,
       input.result,
       input.conclusion || null,
-      input.emotion_close || null,
       options.externalId || null,
       options.source || null,
       nowTimestamp(),
@@ -141,8 +139,8 @@ export async function updateTrade(
       `UPDATE trades SET
          trade_datetime = ?, asset = ?, direction = ?, entry_price = ?,
          stop_loss = ?, take_profit = ?, risk_percent = ?, risk_reward = ?,
-         setup = ?, chart_link = ?, emotion_open = ?, result = ?,
-         conclusion = ?, emotion_close = ?, screenshot = ?, screenshot2 = ?
+         setup = ?, chart_link = ?, result = ?,
+         conclusion = ?, screenshot = ?, screenshot2 = ?
        WHERE id = ?`,
     )
     .bind(
@@ -156,10 +154,8 @@ export async function updateTrade(
       input.risk_reward || null,
       input.setup || null,
       input.chart_link || null,
-      input.emotion_open || null,
       input.result,
       input.conclusion || null,
-      input.emotion_close || null,
       screenshots.screenshot,
       screenshots.screenshot2,
       id,
@@ -179,8 +175,8 @@ export async function updateTradeFromApi(
       `UPDATE trades SET
          trade_datetime = ?, asset = ?, direction = ?, entry_price = ?,
          stop_loss = ?, take_profit = ?, risk_percent = ?, risk_reward = ?,
-         setup = ?, chart_link = ?, emotion_open = ?, result = ?,
-         conclusion = ?, emotion_close = ?, source = ?
+         setup = ?, chart_link = ?, result = ?,
+         conclusion = ?, source = ?
        WHERE id = ?`,
     )
     .bind(
@@ -194,10 +190,8 @@ export async function updateTradeFromApi(
       input.risk_reward || null,
       input.setup || null,
       input.chart_link || null,
-      input.emotion_open || null,
       input.result,
       input.conclusion || null,
-      input.emotion_close || null,
       source,
       id,
     )
