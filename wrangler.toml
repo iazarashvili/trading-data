@@ -1,0 +1,22 @@
+name = "trading-journal"
+main = "src/index.ts"
+compatibility_date = "2026-08-28"
+
+# --- D1 (SQLite) ---
+# შექმნა: npx wrangler d1 create trading-journal
+# შემდეგ ჩასვი მიღებული database_id აქ:
+[[d1_databases]]
+binding = "DB"
+database_name = "trading-journal"
+database_id = "REPLACE_WITH_YOUR_D1_ID"
+
+# --- R2 (სქრინშოტები) ---
+# შექმნა: npx wrangler r2 bucket create trading-journal-uploads
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "trading-journal-uploads"
+
+# საიდუმლოები (არა აქ!):
+#   npx wrangler secret put AUTH_PASSWORD
+#   npx wrangler secret put SESSION_SECRET
+#   npx wrangler secret put JOURNAL_API_KEY
