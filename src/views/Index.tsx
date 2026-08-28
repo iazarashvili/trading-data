@@ -141,7 +141,7 @@ const BalanceForm: FC<{
     <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">
       თვიური საწყისი ბალანსი
     </h2>
-    <form method="post" action="/" class="flex flex-col sm:flex-row flex-wrap items-end gap-3">
+    <form method="post" action="/" class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-end gap-3">
       <input type="hidden" name="form_type" value="balance" />
       <div>
         <label for="balance_month" class="block text-xs text-slate-500 mb-1">
@@ -153,7 +153,7 @@ const BalanceForm: FC<{
           name="month_id"
           value={selectedMonth}
           required
-          class="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800/50 text-sm outline-none focus:ring-2 focus:ring-accent"
+          class="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800/50 text-sm w-full sm:w-auto outline-none focus:ring-2 focus:ring-accent"
         />
       </div>
       <div>
@@ -169,7 +169,7 @@ const BalanceForm: FC<{
           required
           placeholder="10000"
           value={balance === null ? '' : String(balance)}
-          class="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800/50 text-sm w-40 outline-none focus:ring-2 focus:ring-accent tabular-nums"
+          class="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800/50 text-sm w-full sm:w-40 outline-none focus:ring-2 focus:ring-accent tabular-nums"
         />
       </div>
       <button
@@ -189,7 +189,7 @@ const BalanceForm: FC<{
 )
 
 const Card: FC<{ label: string; children?: unknown }> = ({ label, children }) => (
-  <div class="rounded-xl border border-slate-200 dark:border-slate-700/60 bg-white dark:bg-card p-5">
+  <div class="rounded-xl border border-slate-200 dark:border-slate-700/60 bg-white dark:bg-card p-4 sm:p-5">
     <p class="text-xs uppercase tracking-wider text-slate-500">{label}</p>
     {children}
   </div>
@@ -219,26 +219,26 @@ const StatCards: FC<{
         ანალიტიკა — {monthDisplay}
       </h2>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         <Card label="Total P&L">
-          <p class={`mt-1 text-2xl font-bold tabular-nums ${pnlClass}`}>
+          <p class={`mt-1 text-xl sm:text-2xl font-bold tabular-nums ${pnlClass}`}>
             {stats.total_pnl >= 0 ? '+' : ''}${money(stats.total_pnl)}
           </p>
         </Card>
         <Card label="Final Balance">
-          <p class={`mt-1 text-2xl font-bold tabular-nums ${finalClass}`}>
+          <p class={`mt-1 text-xl sm:text-2xl font-bold tabular-nums ${finalClass}`}>
             {stats.has_balance ? `$${money(stats.final_balance as number)}` : '—'}
           </p>
         </Card>
         <Card label="Monthly Growth %">
-          <p class={`mt-1 text-2xl font-bold tabular-nums ${growthClass}`}>
+          <p class={`mt-1 text-xl sm:text-2xl font-bold tabular-nums ${growthClass}`}>
             {stats.growth_pct === null
               ? '—'
               : `${stats.growth_pct >= 0 ? '+' : ''}${money(stats.growth_pct)}%`}
           </p>
         </Card>
         <Card label="Win Rate">
-          <p class="mt-1 text-2xl font-bold tabular-nums text-accent">
+          <p class="mt-1 text-xl sm:text-2xl font-bold tabular-nums text-accent">
             {stats.win_rate.toFixed(1)}%
           </p>
           <p class="text-xs text-slate-500 mt-0.5">
@@ -248,9 +248,9 @@ const StatCards: FC<{
         </Card>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <Card label="ტრეიდები (თვე)">
-          <p class="mt-1 text-2xl font-bold">{stats.trade_count}</p>
+          <p class="mt-1 text-xl sm:text-2xl font-bold">{stats.trade_count}</p>
           <p class="text-xs text-slate-500">დახურული: {stats.closed_count}</p>
         </Card>
         <Card label="საშ. მოგება">
@@ -377,7 +377,15 @@ const TradesTable: FC<{ trades: Trade[]; monthDisplay: string }> = ({ trades, mo
     </div>
 
     {trades.length ? (
-      <div class="overflow-x-auto">
+      <>
+        {/* მობილურზე ცხრილის ნაცვლად ბარათები — 10 სვეტი ტელეფონზე არ იკითხება */}
+        <div class="sm:hidden divide-y divide-slate-100 dark:divide-slate-700/40">
+          {trades.map((trade) => (
+            <TradeCard trade={trade} />
+          ))}
+        </div>
+
+        <div class="hidden sm:block overflow-x-auto">
         <table class="w-full text-sm">
           <thead>
             <tr class="border-b border-slate-200 dark:border-slate-700/60">
@@ -457,6 +465,7 @@ const TradesTable: FC<{ trades: Trade[]; monthDisplay: string }> = ({ trades, mo
           </tbody>
         </table>
       </div>
+      </>
     ) : (
       <div class="px-6 py-16 text-center">
         <p class="text-slate-500 dark:text-slate-400">ამ თვეში ჩანაწერები არ არის.</p>
@@ -535,3 +544,63 @@ function chartScript(equity: ChartSeries, distribution: ChartSeries | null): str
   }
 })();`
 }
+
+/** ერთი ტრეიდი ბარათად — მხოლოდ მობილურზე, ცხრილის ნაცვლად */
+const TradeCard: FC<{ trade: Trade }> = ({ trade }) => (
+  <a
+    href={`/trade/${trade.id}`}
+    class="block px-4 py-3.5 active:bg-slate-50 dark:active:bg-slate-800/30 transition"
+  >
+    <div class="flex items-start justify-between gap-3">
+      <div class="min-w-0">
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="font-medium">{trade.asset}</span>
+          <span
+            class={
+              'inline-flex px-2 py-0.5 rounded text-xs font-medium ' +
+              (trade.direction === 'Long'
+                ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
+                : 'bg-red-500/15 text-red-600 dark:text-red-400')
+            }
+          >
+            {trade.direction}
+          </span>
+          {(trade.screenshot || trade.screenshot2) && (
+            <span class="text-xs text-slate-400" title="სქრინი">
+              📷{trade.screenshot && trade.screenshot2 ? '×2' : ''}
+            </span>
+          )}
+        </div>
+        <p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+          {displayDateTime(trade.trade_datetime)}
+        </p>
+      </div>
+      <span
+        class={
+          'shrink-0 font-semibold tabular-nums ' +
+          (trade.result === null ? 'text-slate-400' : trade.result >= 0 ? 'text-emerald-500' : 'text-red-500')
+        }
+      >
+        {trade.result === null ? '—' : money(trade.result)}
+      </span>
+    </div>
+
+    <dl class="mt-2.5 grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
+      <CardPair label="შესვლა" value={String(trade.entry_price)} />
+      <CardPair label="SL / TP" value={`${num(trade.stop_loss)} / ${num(trade.take_profit)}`} />
+      <CardPair
+        label="რისკი"
+        value={trade.risk_percent === null ? '—' : `${trade.risk_percent}%`}
+      />
+      <CardPair label="R:R" value={num(trade.risk_reward)} />
+      {trade.emotion_open ? <CardPair label="ემოცია" value={trade.emotion_open} /> : null}
+    </dl>
+  </a>
+)
+
+const CardPair: FC<{ label: string; value: string }> = ({ label, value }) => (
+  <div class="flex justify-between gap-2">
+    <dt class="text-slate-500 dark:text-slate-400 shrink-0">{label}</dt>
+    <dd class="tabular-nums truncate">{value}</dd>
+  </div>
+)

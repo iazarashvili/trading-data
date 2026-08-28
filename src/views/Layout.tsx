@@ -41,6 +41,9 @@ const BASE_STYLES = `
 input[type="datetime-local"]::-webkit-calendar-picker-indicator { filter: invert(0.7); }
 .dark input[type="datetime-local"]::-webkit-calendar-picker-indicator { filter: invert(1); }`
 
+/** გვერდითი მენიუს პუნქტები */
+export type NavKey = 'history' | 'killzones'
+
 interface LayoutProps {
   title?: string
   flashes?: Flash[]
@@ -48,6 +51,8 @@ interface LayoutProps {
   scripts?: Child
   /** login გვერდისთვის — nav-ის გარეშე */
   bare?: boolean
+  /** გვერდითი მენიუს აქტიური პუნქტი */
+  activeNav?: NavKey
   children?: Child
 }
 
@@ -57,6 +62,7 @@ export const Layout: FC<LayoutProps> = ({
   head,
   scripts,
   bare = false,
+  activeNav,
   children,
 }) => (
   <>
@@ -80,12 +86,12 @@ export const Layout: FC<LayoutProps> = ({
                 <span class="w-8 h-8 rounded-lg bg-accent flex items-center justify-center text-white text-sm font-bold">
                   TJ
                 </span>
-                <span>Trading Journal</span>
+                <span class="hidden sm:inline">Trading Journal</span>
               </a>
               <div class="flex items-center gap-3">
                 <a
                   href="/trade/new"
-                  class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-accent hover:bg-accent-hover text-white text-sm font-medium transition"
+                  class="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-lg bg-accent hover:bg-accent-hover text-white text-sm font-medium transition"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
@@ -95,7 +101,7 @@ export const Layout: FC<LayoutProps> = ({
                       d="M12 4v16m8-8H4"
                     />
                   </svg>
-                  ახალი ტრეიდი
+                  <span class="hidden sm:inline">ახალი ტრეიდი</span>
                 </a>
                 <ThemeToggle />
                 <form method="post" action="/logout">
@@ -120,10 +126,15 @@ export const Layout: FC<LayoutProps> = ({
           </nav>
         )}
 
-        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <FlashMessages flashes={flashes} />
-          {children}
-        </main>
+        {!bare && <MobileNav active={activeNav} />}
+
+        <div class="flex">
+          {!bare && <Sidebar active={activeNav} />}
+          <main class="flex-1 min-w-0 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <FlashMessages flashes={flashes} />
+            {children}
+          </main>
+        </div>
 
         {scripts}
       </body>
@@ -177,3 +188,72 @@ const FlashMessages: FC<{ flashes: Flash[] }> = ({ flashes }) => {
     </div>
   )
 }
+
+const NAV_ITEMS: { key: NavKey; href: string; label: string; icon: string }[] = [
+  {
+    key: 'history',
+    href: '/',
+    label: 'ისტორია',
+    icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01',
+  },
+  {
+    key: 'killzones',
+    href: '/killzones',
+    label: 'ICT Killzones',
+    icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
+  },
+]
+
+const Sidebar: FC<{ active?: NavKey }> = ({ active }) => (
+  <aside class="hidden sm:block shrink-0 w-16 lg:w-56 border-r border-slate-200 dark:border-slate-700/60 bg-white/60 dark:bg-card/40 sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto">
+    <nav class="p-2 lg:p-3 space-y-1">
+      {NAV_ITEMS.map((item) => (
+        <a
+          href={item.href}
+          title={item.label}
+          aria-current={active === item.key ? 'page' : undefined}
+          class={
+            'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition ' +
+            'justify-center lg:justify-start ' +
+            (active === item.key
+              ? 'bg-accent/10 text-accent dark:text-blue-400'
+              : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50')
+          }
+        >
+          <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d={item.icon}
+            />
+          </svg>
+          <span class="hidden lg:inline truncate">{item.label}</span>
+        </a>
+      ))}
+    </nav>
+  </aside>
+)
+
+/** მობილურზე (sm-მდე) sidebar-ის ნაცვლად ჰორიზონტალური ზოლი — კონტენტს სიგანეს არ ართმევს */
+const MobileNav: FC<{ active?: NavKey }> = ({ active }) => (
+  <nav class="sm:hidden sticky top-14 z-30 flex border-b border-slate-200 dark:border-slate-700/60 bg-white/90 dark:bg-card/90 backdrop-blur">
+    {NAV_ITEMS.map((item) => (
+      <a
+        href={item.href}
+        aria-current={active === item.key ? 'page' : undefined}
+        class={
+          'flex-1 flex items-center justify-center gap-2 px-3 py-3 text-sm font-medium border-b-2 transition ' +
+          (active === item.key
+            ? 'border-accent text-accent dark:text-blue-400'
+            : 'border-transparent text-slate-600 dark:text-slate-300')
+        }
+      >
+        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={item.icon} />
+        </svg>
+        {item.label}
+      </a>
+    ))}
+  </nav>
+)

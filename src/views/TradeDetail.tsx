@@ -6,7 +6,7 @@ const dash = (value: unknown): string =>
   value === null || value === undefined || value === '' ? '—' : String(value)
 
 const SECTION_CLASS =
-  'rounded-xl border border-slate-200 dark:border-slate-700/60 bg-white dark:bg-card p-6'
+  'rounded-xl border border-slate-200 dark:border-slate-700/60 bg-white dark:bg-card p-4 sm:p-6'
 
 const TITLE_CLASS =
   'text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-4'
@@ -40,7 +40,7 @@ export const TradeDetail: FC<{ trade: Trade }> = ({ trade }) => (
       </div>
 
       {trade.result !== null && (
-        <div class="rounded-xl px-5 py-3 border border-slate-200 dark:border-slate-700/60 bg-white dark:bg-card text-right">
+        <div class="rounded-xl px-5 py-3 border border-slate-200 dark:border-slate-700/60 bg-white dark:bg-card text-left sm:text-right">
           <p class="text-xs uppercase tracking-wider text-slate-500">შედეგი</p>
           <p
             class={
